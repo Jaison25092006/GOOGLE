@@ -4,7 +4,15 @@ ADK looks for a module-level variable named `root_agent` in this file.
 That name is a contract, not a convention -- renaming it breaks discovery.
 """
 
+import os
+
 from google.adk.agents import Agent
+
+# Model ID comes from the environment so it can be changed per-deployment
+# without touching this file. On Cloud Run that means `gcloud run services
+# update --set-env-vars` -- no rebuild. The default is what we verified
+# locally against AI Studio.
+MODEL = os.getenv("GOOGLE_GENAI_MODEL", "gemini-3.6-flash")
 
 # --------------------------------------------------------------------------
 # Stand-in for a real orders database. In production this would be a call to
@@ -143,9 +151,10 @@ root_agent = Agent(
     # identifier: letters, digits, underscores -- no spaces or hyphens.
     name="support_agent",
 
-    # Same model ID works on both AI Studio and Vertex AI, so switching
-    # backends is purely a .env change.
-    model="gemini-2.5-flash",
+    # One model ID for both backends: switching AI Studio <-> Vertex AI is a
+    # .env change, and overriding the model itself is also a .env change.
+    # This file stays identical between local and Cloud Run.
+    model=MODEL,
 
     # Used when this agent is a sub-agent of another: the parent model reads
     # this to decide whether to delegate. Harmless but unused for a root agent.
