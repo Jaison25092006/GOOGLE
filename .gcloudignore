@@ -1,0 +1,20 @@
+# Files NOT uploaded to Cloud Build.
+# Without this, gcloud falls back to .gitignore -- do not rely on that.
+
+.git/
+.gitignore
+
+# Never ship the local AI Studio key. Critical for correctness too: a .env
+# in the image sets GOOGLE_GENAI_USE_VERTEXAI=FALSE and would silently
+# override the Cloud Run env vars, so the deployed agent would try to use
+# an API key instead of Vertex.
+.env
+*.env
+ai studio api key
+
+# Hundreds of MB of Windows wheels that would be uploaded and then ignored.
+.venv/
+__pycache__/
+*.py[cod]
+
+NOTES.md
